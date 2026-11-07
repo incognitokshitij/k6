@@ -1,0 +1,9 @@
+{
+  "description": "Loose limits for heavy load, where some slowdown is expected.",
+  "thresholds": {
+    "http_req_failed": ["rate<0.05"],
+    "http_req_duration": ["p(95)<2000", "p(99)<4000"],
+    "checks": ["rate>0.95"],
+    "api_success_rate": ["rate>0.95"]
+  }
+}

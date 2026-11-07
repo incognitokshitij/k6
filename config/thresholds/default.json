@@ -1,0 +1,24 @@
+{
+  "description": "Baseline SLOs (used unless the environment sets another).",
+  "thresholds": {
+    "http_req_failed": [
+      "rate<0.01"
+    ],
+    "http_req_duration": [
+      "p(95)<1500",
+      "p(99)<3000"
+    ],
+    "http_req_waiting": [
+      "p(95)<1400"
+    ],
+    "checks": [
+      "rate>0.99"
+    ],
+    "api_success_rate": [
+      "rate>0.99"
+    ],
+    "api_errors": [
+      "count<50"
+    ]
+  }
+}

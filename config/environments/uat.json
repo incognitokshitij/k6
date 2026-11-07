@@ -1,0 +1,18 @@
+{
+  "name": "uat",
+  "baseUrl": "https://win-usa.uat.skeps.dev",
+  "api": "list-api",
+  "timeout": "30s",
+  "headers": {
+    "Accept": "application/json, text/plain, */*",
+    "Content-Type": "application/json",
+    "Origin": "https://win-usa.uat.skeps.dev",
+    "Cache-Control": "no-cache"
+  },
+  "auth": { "type": "apiKey", "headerName": "access_token", "keyEnv": "ACCESS_TOKEN" },
+  "thinkTime": { "min": 0.5, "max": 1.5 },
+  "loadFactor": 1,
+  "retry": { "maxRetries": 0, "backoffMs": 0, "retryOn": [] },
+  "insecureSkipTLSVerify": false,
+  "tags": { "team": "qa", "region": "uat" }
+}

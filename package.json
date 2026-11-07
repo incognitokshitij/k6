@@ -1,0 +1,9 @@
+{
+  "name": "k6-performance-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Config-driven k6 performance tests",
+  "scripts": {
+    "test": "mkdir -p reports && K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_PORT=-1 K6_WEB_DASHBOARD_EXPORT=reports/report.html k6 run tests/api.test.js"
+  }
+}

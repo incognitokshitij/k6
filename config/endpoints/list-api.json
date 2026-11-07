@@ -1,0 +1,21 @@
+{
+  "name": "list-api",
+  "description": "Contractor dashboard - application list (v2).",
+  "datasets": {},
+  "endpoints": [
+    {
+      "name": "application_list",
+      "group": "contractor_dashboard",
+      "method": "POST",
+      "path": "/partner/api/cygnus/v2/dashboard/lender/contractor/dashboard/application/list/v2",
+      "body": {
+        "data": { "contractor_ids": ["1", "RSPQSR3Q", "GDBEBVHA", "VCRHHH"] },
+        "agent_id": "c9434eae-b080-4920-832c-b172967d6167"
+      },
+      "weight": 1,
+      "expect": { "status": 200, "maxDurationMs": 2000, "contentType": "application/json" },
+      "slo": { "p95": 1500, "p99": 3000, "errorRate": 0.01 }
+    }
+  ],
+  "journeys": []
+}

@@ -1,0 +1,14 @@
+{
+  "description": "The load to run. Edit the scenarios below to change users, duration or request count. Any k6 executor works.",
+  "thinkTime": { "min": 1, "max": 1 },
+  "thresholdSet": "default",
+  "scenarios": {
+    "list_api": {
+      "executor": "shared-iterations",
+      "exec": "getApiFlow",
+      "vus": 1,
+      "iterations": 2,
+      "maxDuration": "1m"
+    }
+  }
+}
