@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+    <testsuites tests="11" failures="7">
+      <testsuite name="k6 list-api uat" tests="11" failures="7">
+        <testcase name="http_req_duration - p(95)&lt;1500" classname="Unnamed folder"><failure message="trend threshold failed: p(99) value: 8097.03478, avg value: 5710.381, min value: 3275.02, med value: 5710.380999999999, max value: 8145.742, p(90) value: 7658.6698, p(95) value: 7902.2059" /></testcase>
+<testcase name="http_req_duration - p(99)&lt;3000" classname="Unnamed folder"><failure message="trend threshold failed: max value: 8145.742, p(90) value: 7658.6698, p(95) value: 7902.2059, p(99) value: 8097.03478, avg value: 5710.381, min value: 3275.02, med value: 5710.380999999999" /></testcase>
+<testcase name="checks - rate&gt;0.99" classname="Unnamed folder"><failure message="rate threshold failed: rate value: 0.6666666666666666, passes value: 4, fails value: 2" /></testcase>
+<testcase name="http_req_failed - rate&lt;0.01" classname="Unnamed folder" />
+<testcase name="http_req_waiting - p(95)&lt;1400" classname="Unnamed folder"><failure message="trend threshold failed: avg value: 1387.241, min value: 1056.113, med value: 1387.241, max value: 1718.369, p(90) value: 1652.1434, p(95) value: 1685.2561999999998, p(99) value: 1711.74644" /></testcase>
+<testcase name="http_req_duration{endpoint:application_list} - p(95)&lt;1500" classname="Unnamed folder"><failure message="trend threshold failed: min value: 3275.02, med value: 5710.380999999999, max value: 8145.742, p(90) value: 7658.6698, p(95) value: 7902.2059, p(99) value: 8097.03478, avg value: 5710.381" /></testcase>
+<testcase name="http_req_duration{endpoint:application_list} - p(99)&lt;3000" classname="Unnamed folder"><failure message="trend threshold failed: max value: 8145.742, p(90) value: 7658.6698, p(95) value: 7902.2059, p(99) value: 8097.03478, avg value: 5710.381, min value: 3275.02, med value: 5710.380999999999" /></testcase>
+<testcase name="http_req_failed{endpoint:application_list} - rate&lt;0.01" classname="Unnamed folder" />
+<testcase name="http_reqs{endpoint:application_list} - count&gt;=0" classname="Unnamed folder" />
+<testcase name="api_errors - count&lt;50" classname="Unnamed folder" />
+<testcase name="api_success_rate - rate&gt;0.99" classname="Unnamed folder"><failure message="rate threshold failed: passes value: 0, fails value: 2, rate value: 0" /></testcase>
+      </testsuite>
+    </testsuites>
