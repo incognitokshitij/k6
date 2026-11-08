@@ -11,7 +11,6 @@ import { resolveRequest } from './params.js';
 import { expectedStatuses } from './checks.js';
 import { apiRetries } from './metrics.js';
 import { buildUrl } from './utils.js';
-import { log } from './logger.js';
 
 export class ApiClient {
   constructor(config, extraHeaders = {}) {
@@ -62,7 +61,6 @@ export class ApiClient {
     let res = http.request(method, url, body, params);
     for (let attempt = 1; attempt <= this.retry.maxRetries && this.shouldRetry(res, endpoint); attempt++) {
       apiRetries.add(1, { endpoint: endpoint.name });
-      log.debug(`retry ${attempt} for ${endpoint.name} after HTTP ${res.status}`);
       sleep((this.retry.backoffMs * attempt) / 1000);
       res = http.request(method, url, body, params);
     }

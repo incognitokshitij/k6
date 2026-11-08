@@ -16,7 +16,6 @@ import { validateResponse } from '../src/core/checks.js';
 import { staticAuthHeaders, fetchOAuthToken } from '../src/core/auth.js';
 import { journeyDuration } from '../src/core/metrics.js';
 import { createWeightedPicker, thinkTime, randomInt } from '../src/core/utils.js';
-import { log } from '../src/core/logger.js';
 import { buildResults, failedThresholds, toTable } from '../src/core/results.js';
 
 export const options = {
@@ -27,7 +26,6 @@ export const options = {
   insecureSkipTLSVerify: config.insecureSkipTLSVerify,
   userAgent: `k6-perf/${config.apiName} (${config.envName})`,
   setupTimeout: '2m',
-  teardownTimeout: '1m',
 };
 
 // ---------- init (once per VU) ----------
@@ -53,12 +51,7 @@ function callEndpoint(endpoint, data) {
 
 // ---------- lifecycle ----------
 export function setup() {
-  log.info(
-    `api=${config.apiName} env=${config.envName} thresholds=${config.thresholdSetName} ` +
-      `baseUrl=${config.baseUrl} loadFactor=${config.loadFactor} endpoints=${config.endpoints.map((e) => e.name).join(',')}`
-  );
-
-  const data = { startedAt: Date.now() };
+  const data = {};
   if (config.auth.type === 'oauth2_client_credentials') data.accessToken = fetchOAuthToken(config.auth);
 
   const hc = config.healthCheck;
@@ -73,14 +66,10 @@ export function setup() {
     if (res.status !== (hc.expectedStatus || 200)) {
       const msg = `health check ${hc.path} returned ${res.status}`;
       if (hc.required) exec.test.abort(`${msg} - aborting (healthCheck.required=true)`);
-      log.warn(`${msg} - continuing`);
+      console.warn(`${msg} - continuing`);
     }
   }
   return data;
-}
-
-export function teardown(data) {
-  log.info(`finished in ${((Date.now() - data.startedAt) / 1000).toFixed(0)}s`);
 }
 
 // ---------- flows (referenced by "exec" in config/test.json) ----------
@@ -119,7 +108,7 @@ export function batchFlow(data) {
 /** One fixed endpoint, chosen per scenario with "env": { "ENDPOINT": "<name>" }. */
 export function endpointFlow(data) {
   callEndpoint(config.endpointsByName[__ENV.ENDPOINT], data);
-  thinkTime(config.thinkTime);
+  thinkTime(config.thinkTime);  
 }
 
 export default function (data) {

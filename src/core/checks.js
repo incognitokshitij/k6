@@ -4,7 +4,6 @@
  */
 import { check } from 'k6';
 import { apiErrors, apiPayloadBytes, apiSuccessRate } from './metrics.js';
-import { log } from './logger.js';
 
 const cache = {};
 
@@ -66,10 +65,6 @@ export function validateResponse(res, endpoint) {
   const ok = check(res, checks, tags);
   apiSuccessRate.add(ok, tags);
   if (res.body) apiPayloadBytes.add(res.body.length, tags);
-  if (!ok) {
-    apiErrors.add(1, tags);
-    log.warn(`${endpoint.name} failed checks: ${res.request.method} ${res.url} -> ${res.status} in ${res.timings.duration.toFixed(0)}ms`);
-    log.debug(`response body: ${String(res.body || '').slice(0, 500)}`);
-  }
+  if (!ok) apiErrors.add(1, tags);
   return ok;
 }
