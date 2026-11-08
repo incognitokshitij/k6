@@ -17,7 +17,7 @@ import { staticAuthHeaders, fetchOAuthToken } from '../src/core/auth.js';
 import { journeyDuration } from '../src/core/metrics.js';
 import { createWeightedPicker, thinkTime, randomInt } from '../src/core/utils.js';
 import { log } from '../src/core/logger.js';
-import { buildSummary } from '../src/reporting/summary.js';
+import { buildResults, failedThresholds, toTable } from '../src/core/results.js';
 
 export const options = {
   scenarios: config.scenarios,
@@ -126,6 +126,18 @@ export default function (data) {
   getApiFlow(data);
 }
 
+/** Replaces k6's long default summary with a results table (one row per endpoint). */
 export function handleSummary(data) {
-  return buildSummary(data, config);
+  const results = buildResults(data, config.endpoints);
+  const failed = failedThresholds(data);
+  const text = [
+    '',
+    `RESULTS  api=${config.apiName}  env=${config.envName}  baseUrl=${config.baseUrl}`,
+    '',
+    toTable(results),
+    '',
+    failed.length ? `FAILED thresholds (${failed.length}):\n  ${failed.join('\n  ')}` : 'All thresholds passed',
+    '',
+  ].join('\n');
+  return { stdout: text };
 }

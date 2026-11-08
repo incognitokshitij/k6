@@ -78,8 +78,13 @@ export function buildThresholds(thresholdSet, endpoints, extra = {}) {
     if (slo.p99) add(durKey, `p(99)<${slo.p99}`);
     if (slo.avg) add(durKey, `avg<${slo.avg}`);
     if (!out[durKey]) add(durKey, 'max>=0');
-    if (slo.errorRate !== undefined) add(`http_req_failed{endpoint:${ep.name}}`, `rate<${slo.errorRate}`);
+    const failKey = `http_req_failed{endpoint:${ep.name}}`;
+    add(failKey, slo.errorRate !== undefined ? `rate<${slo.errorRate}` : 'rate>=0');
+    // no-op thresholds: only so k6 keeps per-endpoint numbers for the results table
     add(`http_reqs{endpoint:${ep.name}}`, 'count>=0');
+    add(`http_req_waiting{endpoint:${ep.name}}`, 'max>=0');
+    add(`checks{endpoint:${ep.name}}`, 'rate>=0');
+    add(`api_payload_bytes{endpoint:${ep.name}}`, 'max>=0');
   }
 
   for (const [metric, rules] of Object.entries(extra || {})) {

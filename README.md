@@ -33,10 +33,8 @@ k6/
 │   └── thresholds/           default | strict | relaxed | breakpoint  -> pass/fail SLOs
 ├── src/
 │   ├── config/               loader.js (reads JSON) + builders.js (merge, scale, validate)
-│   ├── core/                 http-client, checks, params, auth, env (.env reader), metrics, data, logger, utils
-│   └── reporting/            summary.js (text, JSON, JUnit, per-endpoint markdown)
+│   └── core/                 http-client, checks, params, auth, env (.env reader), metrics, data, logger, utils, results (end table)
 ├── tests/api.test.js         entry point: options + flows
-├── reports/                  created on first run, output per run (git-ignored)
 ├── .env                      your access token (git-ignored)
 └── .github/workflows/k6.yml
 ```
@@ -129,16 +127,22 @@ Examples to paste in instead:
 
 Use `-e VUS=...` rather than `--vus`: k6's own `--vus/--duration` flags replace the configured scenarios.
 
-## Reports
+## Results
 
-Each run writes to `reports/`:
+At the end of the run a table prints in the terminal, one row per endpoint (built in `src/core/results.js` as an array of objects):
 
-- `report.html` – charts (k6 web dashboard export, overwritten each run)
-- `list-api_uat_<time>-summary.json` – full end-of-test data
-- `list-api_uat_<time>-junit.xml` – thresholds as test cases (CI)
-- `list-api_uat_<time>-endpoints.md` – per-endpoint avg / p95 / p99 / max and SLO pass/fail
+```
+endpoint         | method | requests | failed | checks | avg_ms | p95_ms | max_ms | server_ms | size_kb | result
+-----------------|--------|----------|--------|--------|--------|--------|--------|-----------|---------|-------
+application_list | POST   | 2        | 0.0%   | 66.7%  | 5710   | 7900   | 8140   | 1380      | 1649    | FAIL
+```
 
-Exit code `99` means thresholds failed.
+- `failed` – share of requests with an unexpected status
+- `checks` – share of checks passed (status, duration, content-type)
+- `server_ms` – time until the server started answering (excludes download)
+- `result` – PASS only if all checks and the endpoint's SLOs passed
+
+Below it, any failed thresholds are listed. Exit code `99` means thresholds failed. Nothing is written to disk.
 
 ## Custom metrics
 
@@ -146,9 +150,8 @@ Exit code `99` means thresholds failed.
 
 ## CI
 
-`.github/workflows/k6.yml` runs `npm run test` on weekdays and on demand (with optional extra k6 args), uploads the reports and publishes the JUnit results. Add `ACCESS_TOKEN` as a repo secret. Because the token expires, a long-lived service token is better for CI. If `k6/` is the repo root, remove the `working-directory` default and the `k6/` path prefixes.
+`.github/workflows/k6.yml` runs `npm run test` on weekdays and on demand (with optional extra k6 args); the result is in the job log. Add `ACCESS_TOKEN` as a repo secret. Because the token expires, a long-lived service token is better for CI. If `k6/` is the repo root, remove the `working-directory` default and the `k6/` path prefixes.
 
 ## Notes
 
-- `src/reporting/summary.js` loads `textSummary`/`jUnit` from `jslib.k6.io`, so the machine running the test needs internet access to it.
 - This load hits a shared UAT environment. Check with the team before raising users or duration.
